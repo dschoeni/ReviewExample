@@ -86,9 +86,6 @@ public class OSMMap extends SherlockActivity implements OnQueryTextListener {
 		DataStorage.addCategory(XMLParser.parseObjects(this, "de"));
 		category = DataStorage.getCategory("0");
 
-		ViserTileSource tileSource = new ViserTileSource(getAssets());
-		DefaultResourceProxyImpl mResourceProxy = new DefaultResourceProxyImpl(this.getApplicationContext());
-		SimpleRegisterReceiver simpleReceiver = new SimpleRegisterReceiver(getApplicationContext());
 
 		MapTileModuleProviderBase moduleProvider = new ViserMapTileAssetsProvider(simpleReceiver, tileSource, getApplicationContext());
 		MapTileProviderArray mProvider = new MapTileProviderArray(tileSource, null, new MapTileModuleProviderBase[] { moduleProvider });
@@ -118,6 +115,9 @@ public class OSMMap extends SherlockActivity implements OnQueryTextListener {
 	protected void onPause() {
 		myLocOverlay.disableMyLocation();
 		myLocOverlay.disableCompass();
+		
+		// Neuer comment!
+		
 		Memory.logHeap(getClass());
 		mapView.getTileProvider().clearTileCache();
 		super.onPause();
@@ -129,8 +129,6 @@ public class OSMMap extends SherlockActivity implements OnQueryTextListener {
 
 		Context context = getSupportActionBar().getThemedContext();
 		MenuItem searchItem = menu.findItem(R.id.menu_search);
-		mSearchView = (com.actionbarsherlock.widget.SearchView) searchItem.getActionView();
-		mSearchView.setOnQueryTextListener(this);
 
 		MenuItem categoriesItem = menu.findItem(R.id.menu_categories);
 
@@ -162,33 +160,7 @@ public class OSMMap extends SherlockActivity implements OnQueryTextListener {
 		return false;
 	}
 
-	/*
-	 * Menuitems
-	 */
-	public boolean onOptionsItemSelected(MenuItem item) {
 
-		if (item.getItemId() == R.id.menu_list) {
-			Intent mainIntent = new Intent(this, ListGuide.class);
-			mainIntent.putExtra("category", category.getId());
-			this.startActivity(mainIntent);
-		} else if (item.getItemId() == android.R.id.home) {
-			finish();
-		}
-
-		if (item.getGroupId() == 1) {
-			category = DataStorage.getCategory(String.valueOf(item.getItemId()));
-			OSMCategory myRoute = PrepareItemizedOverlay(new PlaceOverlay(category.getPlaces().get(0)));
-
-			mapOverlays = mapView.getOverlays();
-			mapOverlays.clear();
-			myRoute.generateRouteFromCategory(category);
-			mapOverlays.add(myRoute);
-
-			mapView.invalidate();
-		}
-
-		return false;
-	}
 
 	private boolean isGPSEnabled() {
 		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -234,6 +206,34 @@ public class OSMMap extends SherlockActivity implements OnQueryTextListener {
 	private void showGpsOptions() {
 		Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 		startActivity(gpsOptionsIntent);
+	}
+	
+		/*
+	 * Menuitems
+	 */
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		if (item.getItemId() == R.id.menu_list) {
+			Intent mainIntent = new Intent(this, ListGuide.class);
+			mainIntent.putExtra("category", category.getId());
+			this.startActivity(mainIntent);
+		} else if (item.getItemId() == android.R.id.home) {
+			finish();
+		}
+
+		if (item.getGroupId() == 1) {
+			category = DataStorage.getCategory(String.valueOf(item.getItemId()));
+			OSMCategory myRoute = PrepareItemizedOverlay(new PlaceOverlay(category.getPlaces().get(0)));
+
+			mapOverlays = mapView.getOverlays();
+			mapOverlays.clear();
+			myRoute.generateRouteFromCategory(category);
+			mapOverlays.add(myRoute);
+
+			mapView.invalidate();
+		}
+
+		return false;
 	}
 
 	private void initMap() {
