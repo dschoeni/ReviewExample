@@ -1,6 +1,7 @@
 
 public class Circle extends Shape {
 	
+	// I used a constant!
 	private static final double PI = 3.14;
 	private double radius;
 
