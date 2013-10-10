@@ -1,6 +1,7 @@
 
 public class Square extends Shape {
-	
+
+	// would int suffice?
 	private double sideLength;
 
 	public Square(double sideLength, double x_center, double y_center) {
