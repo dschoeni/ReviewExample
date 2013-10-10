@@ -1,8 +1,5 @@
 
 public class RectangularShape extends Shape {
-	
-	private double length;
-	private double width;
 
 	public RectangularShape(double length, double width, double x_center, double y_center) {
 		super(x_center, y_center);
